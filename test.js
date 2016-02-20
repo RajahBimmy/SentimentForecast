@@ -34,11 +34,13 @@ d3.tsv("test-data.tsv", type, function(error, data) {
   x.domain(d3.extent(data, function(d) { return d.date; }));
   y.domain(d3.extent(data, function(d) { return d.close; }));
 
+  // Plot x coordinate
   svg.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + height + ")")
       .call(xAxis);
 
+  // Plot y coordinate
   svg.append("g")
       .attr("class", "y axis")
       .call(yAxis)
@@ -49,6 +51,7 @@ d3.tsv("test-data.tsv", type, function(error, data) {
       .style("text-anchor", "end")
       .text("Price ($)");
 
+  // draw the line between points.
   svg.append("path")
       .datum(data)
       .attr("class", "line")
