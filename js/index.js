@@ -23,33 +23,35 @@ d3.json("sentimentParsed.json", function(data) {
     for (var i = 0; i < dataSortedByDate.length; i++) {
         var tempArray = dataSortedByDate[i].DateArray;
         var dateString = tempArray[0] + "-" + tempArray[1] + "-" + tempArray[2];
-        if (dateString in dateMap) {
-            // First, check to make sure the responses actually have a count, and aren't undefined.
-            // If they are, insert at the back.
-            if (isNaN(dataSortedByDate[i].Data.Responses)) {
-                dateMap[dateString].push(dataSortedByDate[i]);
-                continue;
-            }
+        if(tempArray[0] >= 2016) {
+          if (dateString in dateMap) {
+              // First, check to make sure the responses actually have a count, and aren't undefined.
+              // If they are, insert at the back.
+              if (isNaN(dataSortedByDate[i].Data.Responses)) {
+                  dateMap[dateString].push(dataSortedByDate[i]);
+                  continue;
+              }
 
-            // Traverse array, inserting where the response count is lower in the next element.
-            var inserted = false;
-            for (var j = 0; j < dateMap[dateString].length; j++) {
-                if (dataSortedByDate[i].Data.Responses > dateMap[dateString][j].Data.Responses) {
-                    dateMap[dateString].splice(j, 0, dataSortedByDate[i]);
-                    inserted = true;
-                    break;
-                }
-            }
+              // Traverse array, inserting where the response count is lower in the next element.
+              var inserted = false;
+              for (var j = 0; j < dateMap[dateString].length; j++) {
+                  if (dataSortedByDate[i].Data.Responses > dateMap[dateString][j].Data.Responses) {
+                      dateMap[dateString].splice(j, 0, dataSortedByDate[i]);
+                      inserted = true;
+                      break;
+                  }
+              }
 
-            // If not inserted earlier, push now.
-            if (!inserted) {
-                dateMap[dateString].push(dataSortedByDate[i]);
-            }
+              // If not inserted earlier, push now.
+              if (!inserted) {
+                  dateMap[dateString].push(dataSortedByDate[i]);
+              }
 
-        } else {
-            dateNames.push(dateString);
-            dateMap[dateString] = [];
-            dateMap[dateString].push(dataSortedByDate[i]);
+          } else {
+              dateNames.push(dateString);
+              dateMap[dateString] = [];
+              dateMap[dateString].push(dataSortedByDate[i]);
+          }
         }
     }
     // create arrays that will hold data for the graphs
@@ -317,7 +319,7 @@ d3.json("sentimentParsed.json", function(data) {
 
                     d.active = true;
 
-                    showCircleDetail(d);
+                    //showCircleDetail(d);
                 })
                 .on('mouseout', function(d) {
                     d3.select(this)
@@ -333,7 +335,7 @@ d3.json("sentimentParsed.json", function(data) {
                         d.active = false;
                     }
                 })
-                .on('click touch', function(d) {
+                .on('click', function(d) {
                     if (d.active) {
                         showCircleDetail(d)
                     } else {
@@ -402,12 +404,25 @@ d3.json("sentimentParsed.json", function(data) {
                 d3.select("#info").selectAll("p").remove();
                 d3.select("#info").append("h2").html("Top Posts from " + outputInfo(data.date) + ":");
 
-                for(var i = 0; i < data.topPosts.length; i++) {
-                  d3.select("#info").append("h3").html("Post " + (i + 1));
-                  d3.select("#info").append("p").html(data.topPosts[i]);
-                  d3.select("#info").append("p").append("b").html("Emotion: " + data.sentiments[i]);
-                  d3.select("#info").append("p").append("b").html("Popularity Count: " + data.counts[i]);
-                }
+                update(data, 0);
+        }
+
+        function update(data, i) {
+          d3.select("#info").selectAll("h3").remove();
+          d3.select("#info").selectAll("p").remove();
+          d3.select("#info").selectAll("button").remove();
+          d3.select("#info").append("h3").html("Post " + (i + 1));
+          d3.select("#info").append("p").html(data.topPosts[i]);
+          d3.select("#info").append("p").append("b").html("Emotion: " + data.sentiments[i]);
+          d3.select("#info").append("p").append("b").html("Popularity Count: " + data.counts[i]);
+          d3.select("#info").append("button").attr("id", "next").html("Next Post");
+          document.getElementById("next").addEventListener("click", function(){
+            if(i == data.topPosts.length - 1) {
+              update(data, 0)
+            } else {
+              update(data, i + 1);
+            }
+          });
         }
 
         function tween(b, callback) {
@@ -501,7 +516,7 @@ d3.json("sentimentParsed.json", function(data) {
                 .transition()
                 .duration(DURATION)
                 .delay(DELAY)
-                .attr('r', radius - 70);
+                .attr('r', radius - 80);
 
             centerContainer.append('circle')
                 .attr('id', 'pieChart-clippy')
@@ -510,7 +525,7 @@ d3.json("sentimentParsed.json", function(data) {
                 .transition()
                 .delay(DELAY)
                 .duration(DURATION)
-                .attr('r', radius - 75)
+                .attr('r', radius - 85)
                 .attr('fill', '#fff');
         }
 
