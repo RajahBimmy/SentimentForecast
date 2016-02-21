@@ -54,17 +54,12 @@ d3.json("sentimentParsed.json", function(data) {
     }
     // create arrays that will hold data for the graphs
     var linechart = [];
-    var pieChart = [{
-        color: 'red',
-        description: 'Ipsem lorem text goes here. And foo goes bar goes baz. That\'s up!!!',
-        title: 'flowers',
-        value: 0.62
-    }, {
-        color: 'blue',
-        description: 'Another ipsem text goes here. And baz goes bar goes foo. Oh yeah, whazzz up?',
-        title: 'trains',
-        value: 0.38
-    }];
+    var pieChart = [];
+
+    var colors = ['purple', 'blue', 'pink', 'gray', 'brown'];
+
+    var hashtags = [];
+    var tagCounts = [];
     // push one plot point for each separate date
     for (var i = 0; i < dateNames.length; i++) {
         var entries = dateMap[dateNames[i]];
@@ -73,6 +68,9 @@ d3.json("sentimentParsed.json", function(data) {
         var topPostArray = [];
         var topCountArray = [];
         var topSentiments = [];
+
+        var localEntities = [];
+
         for (var j = 0; j < entries.length; j++) {
             totalSentimentScore = totalSentimentScore + entries[j].DocSentiment.Score;
             if(j < 3) {
@@ -80,7 +78,20 @@ d3.json("sentimentParsed.json", function(data) {
               topCountArray.push(entries[j].Data.Responses);
               topSentiments.push(entries[j].DocSentiment.Type);
             }
-        };
+
+            localEntities = entries[j].Entities;
+            for(var k = 0; k < localEntities.length; k++) {
+              if(localEntities[k].Type == "Hashtag") {
+                var index = hashtags.indexOf(localEntities[k].Text.toLowerCase());
+                if(index > -1) {
+                  tagCounts[index] += 1;
+                } else {
+                  hashtags.push(localEntities[k].Text.toLowerCase());
+                  tagCounts.push(1);
+                }
+              }
+            }
+        }
         averageSentimentScore = totalSentimentScore / entries.length;
         var newVal = Math.round(averageSentimentScore*100)/100;
         var newType = "";
@@ -100,26 +111,56 @@ d3.json("sentimentParsed.json", function(data) {
             type: newType,
             sentiments: topSentiments
         });
-    };
+    }
+
+    var slotTags = [];
+    var slotCounts = [];
+
+    while(slotTags.length < 5) {
+      var maximum = Math.max.apply(Math, tagCounts);
+      var index = tagCounts.indexOf(maximum);
+      if(hashtags[index] != "#nyu") {
+        slotTags.push(hashtags[index]);
+        slotCounts.push(tagCounts[index]);
+      }
+      tagCounts[index] = 0;
+    }
+
+    var total = 0;
+    var tagLine = "";
+    var minorityTotal = 0;
+
+    for(var i = 0; i < slotTags.length; i++) {
+      total += slotCounts[i];
+      if(i > 0) {
+        minorityTotal += slotCounts[i];
+      }
+      tagLine += slotTags[i] + ", ";
+    }
+
+    for(var i = 0; i < slotTags.length; i++) {
+      var amount = (1 / total) * slotCounts[i];
+      var descripString = "";
+
+      if(amount > 0.4) {
+        descripString += slotTags[i] + " appeared " + slotCounts[i] + " times total. A staggering amount!";
+      } else {
+        descripString += tagLine + " were the other featured hashtags, appearing " + minorityTotal + " times in total. The percentage above represents " + slotTags[i] + ".";
+      }
+
+      pieChart.push({
+        color: colors[i],
+        description: descripString,
+        title: slotTags[i],
+        value: amount
+      });
+    }
+
+
     // add arrays to data object to populate graphs
     var data = {};
     data["linechart"] = linechart;
     data["pieChart"] = pieChart;
-
-    // var data = {
-    //     linechart: [],
-    //     pieChart: [{
-    //         color: 'red',
-    //         description: 'Ipsem lorem text goes here. And foo goes bar goes baz. That\'s up!!!',
-    //         title: 'flowers',
-    //         value: 0.62
-    //     }, {
-    //         color: 'blue',
-    //         description: 'Another ipsem text goes here. And baz goes bar goes foo. Oh yeah, whazzz up?',
-    //         title: 'trains',
-    //         value: 0.38
-    //     }]
-    // };
 
     var DURATION = 1500;
     var DELAY = 500;
@@ -442,7 +483,9 @@ d3.json("sentimentParsed.json", function(data) {
                 };
             })
             .each('end', function handleAnimationEnd(d) {
-                drawDetailedInformation(d.data, this);
+                if(d.data.value >= 0.14){
+                  drawDetailedInformation(d.data, this);
+                }
             });
 
         drawChartCenter();
@@ -458,7 +501,7 @@ d3.json("sentimentParsed.json", function(data) {
                 .transition()
                 .duration(DURATION)
                 .delay(DELAY)
-                .attr('r', radius - 50);
+                .attr('r', radius - 70);
 
             centerContainer.append('circle')
                 .attr('id', 'pieChart-clippy')
@@ -467,7 +510,7 @@ d3.json("sentimentParsed.json", function(data) {
                 .transition()
                 .delay(DELAY)
                 .duration(DURATION)
-                .attr('r', radius - 55)
+                .attr('r', radius - 75)
                 .attr('fill', '#fff');
         }
 

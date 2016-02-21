@@ -10,9 +10,9 @@ function displayTime(lastMessage) {
     timedMessage += "How's your night going?";
   } else if (rawHours >= 5 && rawHours <= 9) {
     timedMessage += "Good Morning!";
-  } else if (rawHours >= 10 && rawHours <= 2) {
+  } else if (rawHours >= 10 && rawHours <= 14) {
     timedMessage += "Good Day!";
-  } else if (rawHours >= 3 && rawHours <= 5) {
+  } else if (rawHours >= 15 && rawHours <= 17) {
     timedMessage += "Good Afternoon!";
   } else {
     timedMessage += "Good Evening!";

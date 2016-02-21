@@ -86,6 +86,8 @@ h3 {
     margin: 5em auto;
     background-color: rgba(68,68,68,0.5);
     border-radius: 3px;
+    padding-left: 10px;
+    padding-right: 10px;
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.25);
     /*box-shadow: 0 2em 2em #333;*/
   }
@@ -211,12 +213,24 @@ h3 {
   text-align: right;
 }
 
-.pieChart__blue {
+.pieChart__purple {
   fill: #57068c;
 }
 
-.pieChart__red {
+.pieChart__blue {
   fill: #6bb7c7;
+}
+
+.pieChart__pink {
+  fill: #d11255;
+}
+
+.pieChart__gray {
+  fill: #818790;
+}
+
+.pieChart__brown {
+  fill: #816c5d;
 }
 
 /**
