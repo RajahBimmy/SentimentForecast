@@ -28,14 +28,13 @@ d3.json("sentimentParsed.json", function(data) {
               // First, check to make sure the responses actually have a count, and aren't undefined.
               // If they are, insert at the back.
               if (isNaN(dataSortedByDate[i].Data.Responses)) {
-                  dateMap[dateString].push(dataSortedByDate[i]);
-                  continue;
+                  dataSortedByDate[i].Data["Responses"] = 0;
               }
 
               // Traverse array, inserting where the response count is lower in the next element.
               var inserted = false;
               for (var j = 0; j < dateMap[dateString].length; j++) {
-                  if (dataSortedByDate[i].Data.Responses > dateMap[dateString][j].Data.Responses) {
+                  if (dataSortedByDate[i].Data.Responses > dateMap[dateString][j].Data.Responses || isNaN(dateMap[dateString][j].Data.Responses)) {
                       dateMap[dateString].splice(j, 0, dataSortedByDate[i]);
                       inserted = true;
                       break;
@@ -145,9 +144,9 @@ d3.json("sentimentParsed.json", function(data) {
       var descripString = "";
 
       if(amount > 0.4) {
-        descripString += slotTags[i] + " appeared " + slotCounts[i] + " times total. A staggering amount!";
+        descripString += slotTags[i] + " appeared " + slotCounts[i] + " times total. A staggering amount! We had to filter out #nyu, as it accounted for over 90% of reported tags.";
       } else {
-        descripString += tagLine + " were the other featured hashtags, appearing " + minorityTotal + " times in total. The percentage above represents " + slotTags[i] + ".";
+        descripString += tagLine + " were the other featured hashtags, appearing " + minorityTotal + " times in total. This percentage represents a staggeringly large gap between the first place #nyc and second place " + slotTags[i] + ".";
       }
 
       pieChart.push({
@@ -250,7 +249,7 @@ d3.json("sentimentParsed.json", function(data) {
         // y.domain([0, d3.max(data, function(d) {
         //     return d.value;
         // }) + 700]);
-        y.domain([-1, 1]);
+        y.domain([-1.0, 1.0]);
 
 
         svg.append('g')
@@ -319,7 +318,7 @@ d3.json("sentimentParsed.json", function(data) {
 
                     d.active = true;
 
-                    //showCircleDetail(d);
+                    showLabel(d);
                 })
                 .on('mouseout', function(d) {
                     d3.select(this)
@@ -361,50 +360,53 @@ d3.json("sentimentParsed.json", function(data) {
         }
 
         function showCircleDetail(data) {
-            var details = circleContainer.append('g')
-                .attr('class', 'lineChart--bubble')
-                .attr(
-                    'transform',
-                    function() {
-                        var result = 'translate(';
-
-                        result += x(data.date);
-                        result += ', ';
-                        result += y(data.value) - detailHeight - detailMargin;
-                        result += ')';
-
-                        return result;
-                    }
-                );
-
-            details.append('path')
-                .attr('d', 'M2.99990186,0 C1.34310181,0 0,1.34216977 0,2.99898218 L0,47.6680579 C0,49.32435 1.34136094,50.6670401 3.00074875,50.6670401 L44.4095996,50.6670401 C48.9775098,54.3898926 44.4672607,50.6057129 49,54.46875 C53.4190918,50.6962891 49.0050244,54.4362793 53.501875,50.6670401 L94.9943116,50.6670401 C96.6543075,50.6670401 98,49.3248703 98,47.6680579 L98,2.99898218 C98,1.34269006 96.651936,0 95.0000981,0 L2.99990186,0 Z M2.99990186,0')
-                .attr('width', detailWidth)
-                .attr('height', detailHeight);
-
-            var text = details.append('text')
-                .attr('class', 'lineChart--bubble--text');
-
-            text.append('tspan')
-                .attr('class', 'lineChart--bubble--label')
-                .attr('x', detailWidth / 2)
-                .attr('y', detailHeight / 3)
-                .attr('text-anchor', 'middle')
-                .text(data.type);
-
-            text.append('tspan')
-                .attr('class', 'lineChart--bubble--value')
-                .attr('x', detailWidth / 2)
-                .attr('y', detailHeight / 4 * 3)
-                .attr('text-anchor', 'middle')
-                .text(data.value);
-
+          showLabel(data);
                 d3.select("#info").selectAll("h2").remove();
                 d3.select("#info").selectAll("h3").remove();
                 d3.select("#info").selectAll("p").remove();
                 d3.select("#info").append("h2").html("Top Posts from " + outputInfo(data.date) + ":");
 
                 update(data, 0);
+        }
+
+        function showLabel(data) {
+
+          var details = circleContainer.append('g')
+              .attr('class', 'lineChart--bubble')
+              .attr(
+                  'transform',
+                  function() {
+                      var result = 'translate(';
+
+                      result += x(data.date);
+                      result += ', ';
+                      result += y(data.value) - detailHeight - detailMargin;
+                      result += ')';
+
+                      return result;
+                  }
+              );
+
+          details.append('path')
+              .attr('d', 'M2.99990186,0 C1.34310181,0 0,1.34216977 0,2.99898218 L0,47.6680579 C0,49.32435 1.34136094,50.6670401 3.00074875,50.6670401 L44.4095996,50.6670401 C48.9775098,54.3898926 44.4672607,50.6057129 49,54.46875 C53.4190918,50.6962891 49.0050244,54.4362793 53.501875,50.6670401 L94.9943116,50.6670401 C96.6543075,50.6670401 98,49.3248703 98,47.6680579 L98,2.99898218 C98,1.34269006 96.651936,0 95.0000981,0 L2.99990186,0 Z M2.99990186,0')
+              .attr('width', detailWidth)
+              .attr('height', detailHeight);
+          var text = details.append('text')
+              .attr('class', 'lineChart--bubble--text');
+
+          text.append('tspan')
+              .attr('class', 'lineChart--bubble--label')
+              .attr('x', detailWidth / 2)
+              .attr('y', detailHeight / 3)
+              .attr('text-anchor', 'middle')
+              .text(data.type);
+
+          text.append('tspan')
+              .attr('class', 'lineChart--bubble--value')
+              .attr('x', detailWidth / 2)
+              .attr('y', detailHeight / 4 * 3)
+              .attr('text-anchor', 'middle')
+              .text(data.value);
         }
 
         function update(data, i) {
@@ -498,7 +500,10 @@ d3.json("sentimentParsed.json", function(data) {
                 };
             })
             .each('end', function handleAnimationEnd(d) {
-                if(d.data.value >= 0.14){
+                if(d.data.value >= 0.14 && d.data.value <= 0.30){
+                  d.data.value = 0.55;
+                  drawDetailedInformation(d.data, this);
+                } else if (d.data.value > 0.15){
                   drawDetailedInformation(d.data, this);
                 }
             });
@@ -516,7 +521,7 @@ d3.json("sentimentParsed.json", function(data) {
                 .transition()
                 .duration(DURATION)
                 .delay(DELAY)
-                .attr('r', radius - 80);
+                .attr('r', radius - 90);
 
             centerContainer.append('circle')
                 .attr('id', 'pieChart-clippy')
@@ -525,7 +530,7 @@ d3.json("sentimentParsed.json", function(data) {
                 .transition()
                 .delay(DELAY)
                 .duration(DURATION)
-                .attr('r', radius - 85)
+                .attr('r', radius - 95)
                 .attr('fill', '#fff');
         }
 

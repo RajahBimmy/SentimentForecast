@@ -141,7 +141,7 @@ h3 {
 .lineChart--circle {
   fill: #6bb7c7;
   stroke: #fff;
-  stroke-width: 3;
+  stroke-width: 1.5;
 }
 
 .lineChart--circle__highlighted {
@@ -227,7 +227,7 @@ h3 {
 }
 
 .pieChart__pink {
-  fill: #d11255;
+  fill: #AA3939;
 }
 
 .pieChart__gray {
@@ -235,7 +235,7 @@ h3 {
 }
 
 .pieChart__brown {
-  fill: #816c5d;
+  fill: #2D5830;
 }
 
 /**
