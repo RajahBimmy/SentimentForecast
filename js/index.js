@@ -61,28 +61,53 @@ d3.json("sentimentParsed.json", function(data) {
   // }
 });
 
-var lineChart = [];
+
+
+
+;( function(){
+  var data = {
+    linechart : [{}]
+    pieChart  : [
+       {
+        color       : 'red',
+        description : 'Ipsem lorem text goes here. And foo goes bar goes baz. That\'s up!!!',
+        title       : 'flowers',
+        value       : 0.62
+      },
+      {
+        color       : 'blue',
+        description : 'Another ipsem text goes here. And baz goes bar goes foo. Oh yeah, whazzz up?',
+        title       : 'trains',
+        value       : 0.38
+      }
+    ]
+  }
+
+
 for(var i = 0; i < dateNames.length; i++) {
     var entries = dateMap[dateNames[i]];
     var totalSentimentScore = 0;
     var averageSentimentScore = 0;
     for (var j = 0; j < entries.length; j++) {
-        totalScore += value: entries[j].DocSentiment.Score;
+        totalSentimentScore = totalSentimentScore + entries[j].DocSentiment.Score;
     };
-    averageSentimentScore = totalScore / entries.length;
+    averageSentimentScore = totalSentimentScore / entries.length;
     for (var j = 0; j < entries.length; j++) {
-        lineChart.push({
+        data.lineChart.push({
             date: entries[j].DateString,
             label: entries[j].DocSentiment.Text,
             value: averageSentimentScore
-        }
-    });
-}
+        });
+    };
+  };
+};
 
-var data = [];
-data.push( {
-    lineChart: lineChart
-});
+
+
+// var data = [];
+// data.push( {
+//     lineChart: lineChart
+// });
 
 // ;( function() {
 //   var data = {
