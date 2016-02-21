@@ -6,7 +6,7 @@ function displayTime(lastMessage) {
   var hours = checkTime(rawHours, true);
   var timedMessage = "";
 
-  if((rawHours >= 8 && rawHours <= 23) || (rawHours >= 0 && rawHours <= 4)) {
+  if((rawHours >= 20 && rawHours <= 23) || (rawHours >= 0 && rawHours <= 4)) {
     timedMessage += "How's your night going?";
   } else if (rawHours >= 5 && rawHours <= 9) {
     timedMessage += "Good Morning!";

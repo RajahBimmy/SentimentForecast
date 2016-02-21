@@ -67,19 +67,24 @@ d3.json("sentimentParsed.json", function(data) {
     }];
     // push one plot point for each separate date
     for (var i = 0; i < dateNames.length; i++) {
-        console.log(dateNames.length);
         var entries = dateMap[dateNames[i]];
         var totalSentimentScore = 0;
         var averageSentimentScore = 0;
+        var topPostArray = [];
+        var topCountArray = [];
         for (var j = 0; j < entries.length; j++) {
             totalSentimentScore = totalSentimentScore + entries[j].DocSentiment.Score;
+            if(j < 3) {
+              topPostArray.push(entries[j].Data.Text);
+              topCountArray.push(entries[j].Data.Responses);
+            }
         };
         averageSentimentScore = totalSentimentScore / entries.length;
-        console.log("text: "+ entries[0].DocSentiment.Text);
         linechart.push({
-            date: entries[0].DateString,
-            label: entries[0].DocSentiment.Text,
-            value: averageSentimentScore
+            date: dateNames[i],
+            value: Math.round(averageSentimentScore*100)/100,
+            topPosts: topPostArray,
+            counts: topCountArray
         });
     };
     // add arrays to data object to populate graphs
@@ -104,6 +109,7 @@ d3.json("sentimentParsed.json", function(data) {
 
     var DURATION = 1500;
     var DELAY = 500;
+    var XCOOR = 0;
     /**
      * draw the fancy line chart
      *
@@ -113,10 +119,10 @@ d3.json("sentimentParsed.json", function(data) {
     function drawLineChart(elementId, data) {
         // parse helper functions on top
         var parse = d3.time.format('%Y-%m-%d').parse;
+        var outputInfo = d3.time.format('%x');
         // data manipulation first
         data = data.map(function(datum) {
             datum.date = parse(datum.date);
-
             return datum;
         });
 
@@ -144,7 +150,7 @@ d3.json("sentimentParsed.json", function(data) {
             .ticks(8)
             .tickSize(-height),
             xAxisTicks = d3.svg.axis().scale(x)
-            .ticks(16)
+            .ticks(d3.time.month, 4)
             .tickSize(-height)
             .tickFormat(''),
             y = d3.scale.linear().range([height, 0]),
@@ -163,7 +169,6 @@ d3.json("sentimentParsed.json", function(data) {
             .y1(function(d) {
                 return y(d.value);
             }),
-
             line = d3.svg.line()
             .interpolate('linear')
             .x(function(d) {
@@ -237,6 +242,7 @@ d3.json("sentimentParsed.json", function(data) {
                 .attr(
                     'cx',
                     function(d) {
+
                         return x(d.date) + detailWidth / 2;
                     }
                 )
@@ -327,7 +333,7 @@ d3.json("sentimentParsed.json", function(data) {
                 .attr('x', detailWidth / 2)
                 .attr('y', detailHeight / 3)
                 .attr('text-anchor', 'middle')
-                .text(data.label);
+                .text(data.index);
 
             text.append('tspan')
                 .attr('class', 'lineChart--bubble--value')
@@ -335,6 +341,17 @@ d3.json("sentimentParsed.json", function(data) {
                 .attr('y', detailHeight / 4 * 3)
                 .attr('text-anchor', 'middle')
                 .text(data.value);
+
+                d3.select("#info").selectAll("h2").remove();
+                d3.select("#info").selectAll("h3").remove();
+                d3.select("#info").selectAll("p").remove();
+                d3.select("#info").append("h2").html("Top Posts from " + outputInfo(data.date) + ":");
+
+                for(var i = 0; i < data.topPosts.length; i++) {
+                  d3.select("#info").append("h3").html("Post " + (i + 1));
+                  d3.select("#info").append("p").html(data.topPosts[i]);
+                  d3.select("#info").append("p").append("b").html("Popularity Count: " + data.counts[i]);
+                }
         }
 
         function tween(b, callback) {

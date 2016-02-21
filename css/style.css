@@ -38,6 +38,10 @@ h3 {
   font-size: 2em;
 }
 
+#info {
+  min-height: 400px;
+}
+
 .chart {
   min-height: 400px;
   border-bottom: 1px solid #eee;
@@ -109,11 +113,9 @@ h3 {
 }
 
 .lineChart--bubble--label {
-  fill: none;
-  stroke: #57068c;
-  font-size: 12.6px;
+  fill: #fff;
+  font-size: 11px;
   font-style: italic;
-  font-weight: 100;
 }
 
 .lineChart--bubble--value {
