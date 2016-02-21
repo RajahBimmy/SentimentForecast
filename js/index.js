@@ -72,19 +72,33 @@ d3.json("sentimentParsed.json", function(data) {
         var averageSentimentScore = 0;
         var topPostArray = [];
         var topCountArray = [];
+        var topSentiments = [];
         for (var j = 0; j < entries.length; j++) {
             totalSentimentScore = totalSentimentScore + entries[j].DocSentiment.Score;
             if(j < 3) {
               topPostArray.push(entries[j].Data.Text);
               topCountArray.push(entries[j].Data.Responses);
+              topSentiments.push(entries[j].DocSentiment.Type);
             }
         };
         averageSentimentScore = totalSentimentScore / entries.length;
+        var newVal = Math.round(averageSentimentScore*100)/100;
+        var newType = "";
+
+        if(newVal > 0) {
+          newType += "Positive";
+        } else if (newVal < 0) {
+          newType += "Negative";
+        } else {
+          newType += "Neutral"
+        }
         linechart.push({
             date: dateNames[i],
-            value: Math.round(averageSentimentScore*100)/100,
+            value: newVal,
             topPosts: topPostArray,
-            counts: topCountArray
+            counts: topCountArray,
+            type: newType,
+            sentiments: topSentiments
         });
     };
     // add arrays to data object to populate graphs
@@ -333,7 +347,7 @@ d3.json("sentimentParsed.json", function(data) {
                 .attr('x', detailWidth / 2)
                 .attr('y', detailHeight / 3)
                 .attr('text-anchor', 'middle')
-                .text(data.index);
+                .text(data.type);
 
             text.append('tspan')
                 .attr('class', 'lineChart--bubble--value')
@@ -350,6 +364,7 @@ d3.json("sentimentParsed.json", function(data) {
                 for(var i = 0; i < data.topPosts.length; i++) {
                   d3.select("#info").append("h3").html("Post " + (i + 1));
                   d3.select("#info").append("p").html(data.topPosts[i]);
+                  d3.select("#info").append("p").append("b").html("Emotion: " + data.sentiments[i]);
                   d3.select("#info").append("p").append("b").html("Popularity Count: " + data.counts[i]);
                 }
         }

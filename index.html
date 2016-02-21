@@ -10,53 +10,57 @@
   </head>
 
   <body>
-    <div class="charts--headline">
-      <div id="greeting"></div>
-    </div>
-    <div class="charts--container">
-      <ul>
-        <li class="chart">
-          <h3 class="chart--subHeadline">What's NYU Talking About Today?</h3>
-          <!-- <h2 class="chart--headline">Pie Question Would Go Here</h2> -->
-          <div id="pieChart">
-            <svg id="pieChartSVG">
-              <defs>
-                <filter id='pieChartInsetShadow'>
-                  <feOffset dx='0' dy='0'/>
-                  <feGaussianBlur stdDeviation='3' result='offset-blur' />
-                  <feComposite operator='out' in='SourceGraphic' in2='offset-blur' result='inverse' />
-                  <feFlood flood-color='black' flood-opacity='1' result='color' />
-                  <feComposite operator='in' in='color' in2='inverse' result='shadow' />
-                  <feComposite operator='over' in='shadow' in2='SourceGraphic' />
-                </filter>
-                <filter id="pieChartDropShadow">
-                  <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur" />
-                  <feOffset in="blur" dx="0" dy="3" result="offsetBlur" />
-                  <feMerge>
-                    <feMergeNode />
-                    <feMergeNode in="SourceGraphic" />
-                  </feMerge>
-                </filter>
-              </defs>
-            </svg>
-          </div>
-        </li>
-        <li class="chart">
-          <h3 class="chart--subHeadline">Public Perception Forecaster</h3>
-          <!-- <h2 class="chart--headline">What are students saying about issues involving NYU?</h2> -->
-          <div id="lineChart">
-            <svg id="lineChartSVG" class="lineChart--svg">
-              <defs>
-                <linearGradient id="lineChart--gradientBackgroundArea" x1="0" x2="0" y1="0" y2="1">
-                  <stop class="lineChart--gradientBackgroundArea--top" offset="0%" />
-                  <stop class="lineChart--gradientBackgroundArea--bottom" offset="100%" />
-                </linearGradient>
-              </defs>
-            </svg>
-          </div>
-        </li>
-        <li id="info"></li>
-      </ul>
+    <div class="container">
+      <div class="charts--headline">
+        <div id="greeting"></div>
+      </div>
+      <div class="charts--container">
+        <ul>
+          <li class="chart">
+            <h3 class="chart--subHeadline">What's NYU Talking About Today?</h3>
+            <!-- <h2 class="chart--headline">Pie Question Would Go Here</h2> -->
+            <div id="pieChart">
+              <svg id="pieChartSVG">
+                <defs>
+                  <filter id='pieChartInsetShadow'>
+                    <feOffset dx='0' dy='0'/>
+                    <feGaussianBlur stdDeviation='3' result='offset-blur' />
+                    <feComposite operator='out' in='SourceGraphic' in2='offset-blur' result='inverse' />
+                    <feFlood flood-color='black' flood-opacity='1' result='color' />
+                    <feComposite operator='in' in='color' in2='inverse' result='shadow' />
+                    <feComposite operator='over' in='shadow' in2='SourceGraphic' />
+                  </filter>
+                  <filter id="pieChartDropShadow">
+                    <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur" />
+                    <feOffset in="blur" dx="0" dy="3" result="offsetBlur" />
+                    <feMerge>
+                      <feMergeNode />
+                      <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                  </filter>
+                </defs>
+              </svg>
+            </div>
+          </li>
+          <li class="chart">
+            <h3 class="chart--subHeadline">Public Perception Forecaster</h3>
+            <!-- <h2 class="chart--headline">What are students saying about issues involving NYU?</h2> -->
+            <div id="lineChart">
+              <svg id="lineChartSVG" class="lineChart--svg">
+                <defs>
+                  <linearGradient id="lineChart--gradientBackgroundArea" x1="0" x2="0" y1="0" y2="1">
+                    <stop class="lineChart--gradientBackgroundArea--top" offset="0%" />
+                    <stop class="lineChart--gradientBackgroundArea--bottom" offset="100%" />
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+          </li>
+          <li>
+            <div id="info"></div>
+          </li>
+        </ul>
+      </div>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
