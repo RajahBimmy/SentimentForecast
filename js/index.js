@@ -1,3 +1,66 @@
+d3.selectAll("h1").style("color", "white");
+
+d3.json("sentimentParsed.json", function(data) {
+
+  var dataSortedByDate = data.sort(function(a,b) {
+    for(var i = 0; i < 3; i++) {
+      if(a.DateArray[i] > b.DateArray[i]) {
+        return 1;
+      }
+      if (a.DateArray[i] < b.DateArray[i]) {
+        return -1;
+      }
+    }
+    return 0;
+  });
+
+  var dateMap = [];
+  var dateNames = [];
+
+  for(var i = 0; i < dataSortedByDate.length; i++) {
+    var tempArray = dataSortedByDate[i].DateArray;
+    var dateString = tempArray[0] + "-" + tempArray[1] + "-" + tempArray[2];
+    if(dateString in dateMap) {
+      // First, check to make sure the responses actually have a count, and aren't undefined.
+      // If they are, insert at the back.
+      if(isNaN(dataSortedByDate[i].Data.Responses)){
+        dateMap[dateString].push(dataSortedByDate[i]);
+        continue;
+      }
+
+      // Traverse array, inserting where the response count is lower in the next element.
+      var inserted = false;
+      for(var j = 0; j < dateMap[dateString].length; j++) {
+        if (dataSortedByDate[i].Data.Responses > dateMap[dateString][j].Data.Responses){
+          dateMap[dateString].splice(j, 0, dataSortedByDate[i]);
+          inserted = true;
+          break;
+        }
+      }
+
+      // If not inserted earlier, push now.
+      if(!inserted) {
+        dateMap[dateString].push(dataSortedByDate[i]);
+      }
+
+    } else {
+      dateNames.push(dateString);
+      dateMap[dateString] = [];
+      dateMap[dateString].push(dataSortedByDate[i]);
+    }
+  }
+
+  //d3.select("#potato").append("p").append("b").html(dataSortedByDate[i].DateString + " | " + dataSortedByDate[i].DocSentiment.Type + " | " + sortedData[i].Data.Type);
+  // Responses | Text | Type
+
+  for(var i = 0; i < dateNames.length; i++) {
+    var entries = dateMap[dateNames[i]];
+    for(var j = 0; j < entries.length; j++) {
+      d3.select("#potato").append("p").append("b").html(entries[j].DateString + " | " + entries[j].DocSentiment.Type + " | " + entries[j].Data.Responses);
+    }
+  }
+});
+
 ;( function() {
   var data = {
     lineChart : [
@@ -67,10 +130,10 @@
       }
     ]
   };
-  
+
   var DURATION = 1500;
   var DELAY    = 500;
-  
+
   /**
    * draw the fancy line chart
    *
@@ -83,10 +146,10 @@
     // data manipulation first
     data = data.map( function( datum ) {
       datum.date = parse( datum.date );
-      
+
       return datum;
     } );
-    
+
     // TODO code duplication check how you can avoid that
     var containerEl = document.getElementById( elementId ),
         width       = containerEl.clientWidth,
@@ -94,9 +157,9 @@
         margin      = {
           top    : 30,
           right  : 10,
-          left   : 10 
+          left   : 10
         },
-        
+
         detailWidth  = 98,
         detailHeight = 55,
         detailMargin = 10,
@@ -120,7 +183,7 @@
                                   .tickSize( width )
                                   .tickFormat( '' )
                                   .orient( 'right' ),
-        
+
         area = d3.svg.area()
                       .interpolate( 'linear' )
                       .x( function( d )  { return x( d.date ) + detailWidth / 2; } )
@@ -131,14 +194,14 @@
                   .interpolate( 'linear' )
                   .x( function( d ) { return x( d.date ) + detailWidth / 2; } )
                   .y( function( d ) { return y( d.value ); } ),
-        
+
         startData = data.map( function( datum ) {
                       return {
                         date  : datum.date,
                         value : 0
                       };
                     } ),
-        
+
         circleContainer;
 
     // Compute the minimum and maximum date, and the maximum price.
@@ -155,11 +218,11 @@
         .attr( 'class', 'lineChart--xAxis' )
         .attr( 'transform', 'translate(' + detailWidth / 2 + ',' + ( height + 7 ) + ')' )
         .call( xAxis );
-    
+
     svg.append( 'g' )
       .attr( 'class', 'lineChart--yAxisTicks' )
       .call( yAxisTicks );
-    
+
     // Add the line path.
     svg.append( 'path' )
         .datum( startData )
@@ -172,8 +235,8 @@
         .each( 'end', function() {
           drawCircles( data );
         } );
-    
-    
+
+
     // Add the area path.
     svg.append( 'path' )
         .datum( startData )
@@ -182,7 +245,7 @@
         .transition()
         .duration( DURATION )
         .attrTween( 'd', tween( data, area ) );
-    
+
     // Helper functions!!!
     function drawCircle( datum, index ) {
       circleContainer.datum( datum )
@@ -205,25 +268,25 @@
                       d3.select( this )
                         .attr(
                           'class',
-                          'lineChart--circle lineChart--circle__highlighted' 
+                          'lineChart--circle lineChart--circle__highlighted'
                         )
                         .attr( 'r', 7 );
-                      
+
                         d.active = true;
-                        
+
                         showCircleDetail( d );
                     } )
                     .on( 'mouseout', function( d ) {
                       d3.select( this )
                         .attr(
                           'class',
-                          'lineChart--circle' 
+                          'lineChart--circle'
                         )
                         .attr( 'r', 6 );
-                      
+
                       if ( d.active ) {
                         hideCircleDetails();
-                        
+
                         d.active = false;
                       }
                     } )
@@ -238,7 +301,7 @@
                     .delay( DURATION / 10 * index )
                     .attr( 'r', 6 );
     }
-    
+
     function drawCircles( data ) {
       circleContainer = svg.append( 'g' );
 
@@ -246,12 +309,12 @@
         drawCircle( datum, index );
       } );
     }
-    
+
     function hideCircleDetails() {
       circleContainer.selectAll( '.lineChart--bubble' )
                       .remove();
     }
-    
+
     function showCircleDetail( data ) {
       var details = circleContainer.append( 'g' )
                         .attr( 'class', 'lineChart--bubble' )
@@ -259,31 +322,31 @@
                           'transform',
                           function() {
                             var result = 'translate(';
-                            
+
                             result += x( data.date );
                             result += ', ';
                             result += y( data.value ) - detailHeight - detailMargin;
                             result += ')';
-                            
+
                             return result;
                           }
                         );
-      
+
       details.append( 'path' )
               .attr( 'd', 'M2.99990186,0 C1.34310181,0 0,1.34216977 0,2.99898218 L0,47.6680579 C0,49.32435 1.34136094,50.6670401 3.00074875,50.6670401 L44.4095996,50.6670401 C48.9775098,54.3898926 44.4672607,50.6057129 49,54.46875 C53.4190918,50.6962891 49.0050244,54.4362793 53.501875,50.6670401 L94.9943116,50.6670401 C96.6543075,50.6670401 98,49.3248703 98,47.6680579 L98,2.99898218 C98,1.34269006 96.651936,0 95.0000981,0 L2.99990186,0 Z M2.99990186,0' )
               .attr( 'width', detailWidth )
               .attr( 'height', detailHeight );
-      
+
       var text = details.append( 'text' )
                         .attr( 'class', 'lineChart--bubble--text' );
-      
+
       text.append( 'tspan' )
           .attr( 'class', 'lineChart--bubble--label' )
           .attr( 'x', detailWidth / 2 )
           .attr( 'y', detailHeight / 3 )
           .attr( 'text-anchor', 'middle' )
           .text( data.label );
-      
+
       text.append( 'tspan' )
           .attr( 'class', 'lineChart--bubble--value' )
           .attr( 'x', detailWidth / 2 )
@@ -291,7 +354,7 @@
           .attr( 'text-anchor', 'middle' )
           .text( data.value );
     }
-    
+
     function tween( b, callback ) {
       return function( a ) {
         var i = d3.interpolateArray( a, b );
@@ -302,7 +365,7 @@
       };
     }
   }
-  
+
   /**
    * draw the fancy pie chart
    *
@@ -324,7 +387,7 @@
                   'transform',
                   'translate(' + width / 2 + ',' + height / 2 + ')'
                 );
-    
+
     var detailedInfo = svg.append( 'g' )
                           .attr( 'class', 'pieChart--detailedInformation' );
 
@@ -335,7 +398,7 @@
     var arc = d3.svg.arc()
                     .outerRadius( radius - 20)
                     .innerRadius( 0 );
-    
+
     var pieChartPieces = pie.datum( data )
                             .selectAll( 'path' )
                             .data( pieData )
@@ -347,28 +410,28 @@
                             .attr( 'filter', 'url(#pieChartInsetShadow)' )
                             .attr( 'd', arc )
                             .each( function() {
-                              this._current = { startAngle: 0, endAngle: 0 }; 
+                              this._current = { startAngle: 0, endAngle: 0 };
                             } )
                             .transition()
                             .duration( DURATION )
                             .attrTween( 'd', function( d ) {
                               var interpolate = d3.interpolate( this._current, d );
                               this._current = interpolate( 0 );
-                    
+
                               return function( t ) {
                                 return arc( interpolate( t ) );
                               };
                             } )
                             .each( 'end', function handleAnimationEnd( d ) {
-                              drawDetailedInformation( d.data, this ); 
+                              drawDetailedInformation( d.data, this );
                             } );
 
-    drawChartCenter(); 
-    
+    drawChartCenter();
+
     function drawChartCenter() {
       var centerContainer = pie.append( 'g' )
                                 .attr( 'class', 'pieChart--center' );
-      
+
       centerContainer.append( 'circle' )
                       .attr( 'class', 'pieChart--center--outerCircle' )
                       .attr( 'r', 0 )
@@ -377,7 +440,7 @@
                       .duration( DURATION )
                       .delay( DELAY )
                       .attr( 'r', radius - 50 );
-      
+
       centerContainer.append( 'circle' )
                       .attr( 'id', 'pieChart-clippy' )
                       .attr( 'class', 'pieChart--center--innerCircle' )
@@ -388,14 +451,14 @@
                       .attr( 'r', radius - 55 )
                       .attr( 'fill', '#fff' );
     }
-    
+
     function drawDetailedInformation ( data, element ) {
       var bBox      = element.getBBox(),
           infoWidth = width * 0.3,
           anchor,
           infoContainer,
           position;
-      
+
       if ( ( bBox.x + bBox.width / 2 ) > 0 ) {
         infoContainer = detailedInfo.append( 'g' )
                                     .attr( 'width', infoWidth )
@@ -435,7 +498,7 @@
                         this.textContent = i( t ) + ' %';
                       };
                     } );
-      
+
       infoContainer.append( 'line' )
                     .attr( 'class', 'pieChart--detail--divider' )
                     .attr( 'x1', 0 )
@@ -445,10 +508,10 @@
                     .transition()
                     .duration( DURATION )
                     .attr( 'x2', infoWidth );
-      
-      infoContainer.data( [ data.description ] ) 
+
+      infoContainer.data( [ data.description ] )
                     .append( 'foreignObject' )
-                    .attr( 'width', infoWidth ) 
+                    .attr( 'width', infoWidth )
                     .attr( 'height', 100 )
                     .append( 'xhtml:body' )
                     .attr(
@@ -458,13 +521,13 @@
                     .html( data.description );
     }
   }
-  
+
   function ಠ_ಠ() {
     drawPieChart(     'pieChart',     data.pieChart );
     drawLineChart(    'lineChart',    data.lineChart );
   }
-  
+
   // yeah, let's kick things off!!!
   ಠ_ಠ();
-  
+
 })();
