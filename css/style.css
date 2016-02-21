@@ -8,11 +8,14 @@
 
 body {
   font-size: 14px;
-  font-family: sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-weight: 100;
   background-color: #ccc;
-  background-image: linear-gradient(transparent 50%, rgba(255, 255, 255, 0.5) 25%);
-  background-size: 4px 4px;
+  color: #fff;
+  /*background-image: linear-gradient(transparent 50%, rgba(255, 255, 255, 0.5) 25%);
+  background-size: 4px 4px;*/
+  background-image: url('../images/waSqPa.JPG');
+  background-size: cover;
 }
 body ul {
   list-style: none;
@@ -20,6 +23,19 @@ body ul {
 body ul, body li {
   margin: 0;
   padding: 0;
+}
+
+h1 {
+  font-size: 6em;
+}
+
+h2 {
+  font-size: 3em;
+}
+
+h3 {
+  color: #fff;
+  font-size: 2em;
 }
 
 .chart {
@@ -47,15 +63,10 @@ body ul, body li {
   border-top: 1px dashed #999999;
 }
 
-.chart--subHeadline {
-  font-weight: 400;
-  font-size: 14px;
-  letter-spacing: 1px;
-}
-
 .charts--container {
   background-color: #fff;
   width: 100%;
+  filter: blur(5px);
 }
 @media screen and (min-width: 700px) {
   .charts--container {
@@ -63,15 +74,28 @@ body ul, body li {
     left: 50%;
     top: 10%;
     margin: 5em auto;
-    box-shadow: 0 2em 2em #333;
+    background-color: rgba(68,68,68,0.5);
+    border-radius: 3px;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.25);
+    /*box-shadow: 0 2em 2em #333;*/
   }
 }
 
 .charts--headline {
   text-align: center;
-  color: #444;
-  background-color: #fff;
+  color: #fff;
+  background-color: rgba(68,68,68,0.5);
+  border-radius: 3px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.25);
   padding: 1em;
+  max-width: 700px;
+  left: 50%;
+  top: 10%;
+  margin: 5em auto;
+}
+
+#greeting h1 {
+  margin-top: -25px;
 }
 
 .lineChart--area {
@@ -80,13 +104,13 @@ body ul, body li {
 
 .lineChart--areaLine {
   fill: none;
-  stroke: #6bb7c7;
+  stroke: #57068c;
   stroke-width: 3;
 }
 
 .lineChart--bubble--label {
   fill: none;
-  stroke: #6bb7c7;
+  stroke: #57068c;
   font-size: 12.6px;
   font-style: italic;
   font-weight: 100;
@@ -111,7 +135,7 @@ body ul, body li {
 }
 
 .lineChart--gradientBackgroundArea--top {
-  stop-color: #6bb7c7;
+  stop-color: #57068c;
   stop-opacity: 0.1;
 }
 
@@ -152,14 +176,14 @@ body ul, body li {
 }
 
 .pieChart--detail--divider {
-  stroke: gray;
+  stroke: #fff;
   stroke-width: 1;
 }
 
 .pieChart--detail--percentage {
   font-size: 42px;
   font-weight: 100;
-  fill: #333;
+  fill: #fff;
   stroke-width: 1px;
 }
 
@@ -167,7 +191,7 @@ body ul, body li {
   background-color: transparent;
   padding: 10px 0 0 0;
   margin: 0;
-  color: #666;
+  color: #fff;
   font-style: italic;
 }
 
@@ -180,11 +204,11 @@ body ul, body li {
 }
 
 .pieChart__blue {
-  fill: #6bb7c7;
+  fill: #57068c;
 }
 
 .pieChart__red {
-  fill: #d79d91;
+  fill: #6bb7c7;
 }
 
 /**

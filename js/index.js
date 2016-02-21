@@ -473,6 +473,7 @@ d3.json("sentimentParsed.json", function(data) {
                 .attr('x', (position === 'left' ? 0 : infoWidth))
                 .attr('y', -10)
                 .attr('text-anchor', anchor)
+                .attr('color', '#fff')
                 .transition()
                 .duration(DURATION)
                 .tween('text', function(d) {
@@ -499,7 +500,6 @@ d3.json("sentimentParsed.json", function(data) {
                 .append('foreignObject')
                 .attr('width', infoWidth)
                 .attr('height', 100)
-                .append('xhtml:body')
                 .attr(
                     'class',
                     'pieChart--detail--textContainer ' + 'pieChart--detail__' + position
