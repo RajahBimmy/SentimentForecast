@@ -15,7 +15,7 @@ d3.json("sentimentParsed.json", function(data) {
   });
 
   var dateMap = [];
-  var arrayOfDates = [];
+  var dateNames = [];
 
   for(var i = 0; i < dataSortedByDate.length; i++) {
     var tempArray = dataSortedByDate[i].DateArray;
@@ -44,7 +44,7 @@ d3.json("sentimentParsed.json", function(data) {
       }
 
     } else {
-      arrayOfDates.push(dateString);
+      dateNames.push(dateString);
       dateMap[dateString] = [];
       dateMap[dateString].push(dataSortedByDate[i]);
     }
@@ -53,8 +53,8 @@ d3.json("sentimentParsed.json", function(data) {
   //d3.select("#potato").append("p").append("b").html(dataSortedByDate[i].DateString + " | " + dataSortedByDate[i].DocSentiment.Type + " | " + sortedData[i].Data.Type);
   // Responses | Text | Type
 
-  for(var i = 0; i < arrayOfDates.length; i++) {
-    var entries = dateMap[arrayOfDates[i]];
+  for(var i = 0; i < dateNames.length; i++) {
+    var entries = dateMap[dateNames[i]];
     for(var j = 0; j < entries.length; j++) {
       d3.select("#potato").append("p").append("b").html(entries[j].DateString + " | " + entries[j].DocSentiment.Type + " | " + entries[j].Data.Responses);
     }
