@@ -69,11 +69,13 @@ for(var i = 0; i < dateNames.length; i++) {
     for (var j = 0; j < entries.length; j++) {
         totalScore += value: entries[j].DocSentiment.Score;
     };
-    averageScore = totalScore / entries.length;
-    lineChart.push({
-        date: entries[j].DateString,
-        label: entries[j].DocSentiment.Text,
-        value: averageSentimentScore
+    averageSentimentScore = totalScore / entries.length;
+    for (var j = 0; j < entries.length; j++) {
+        lineChart.push({
+            date: entries[j].DateString,
+            label: entries[j].DocSentiment.Text,
+            value: averageSentimentScore
+        }
     });
 }
 
