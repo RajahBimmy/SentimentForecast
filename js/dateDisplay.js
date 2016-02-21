@@ -1,9 +1,9 @@
 function displayTime(lastMessage) {
   var currentDate = new Date();
   var rawHours = currentDate.getHours();
-  var minutes = checkTime(currentDate.getMinutes());
-  var seconds = checkTime(currentDate.getSeconds());
-  var hours = checkTime(rawHours);
+  var minutes = checkTime(currentDate.getMinutes(), false);
+  var seconds = checkTime(currentDate.getSeconds(), false);
+  var hours = checkTime(rawHours, true);
   var timedMessage = "";
 
   if((rawHours >= 8 && rawHours <= 23) || (rawHours >= 0 && rawHours <= 4)) {
@@ -18,18 +18,35 @@ function displayTime(lastMessage) {
     timedMessage += "Good Evening!";
   }
 
+  var amPm = "";
+
+  if(rawHours > 11) {
+    amPm += "PM";
+  } else {
+    amPm += "AM";
+  }
+
   d3.select("#greeting").selectAll("h1").remove();
   d3.select("#greeting").selectAll("h2").remove();
   d3.select("#greeting").append("h2").html(timedMessage);
-  d3.select("#greeting").append("h1").html(hours + ":" + minutes + ":" + seconds);
+  d3.select("#greeting").append("h1").html(hours + ":" + minutes + " " + amPm);
 
   var t = setTimeout(displayTime, 500);
 }
 
-function checkTime(i) {
+function checkTime(i, isHours) {
   if (i < 10) {
     i = "0" + i;
   }
+
+  if (isHours) {
+    if(i == "00") {
+      i = "12";
+    } else if (i > 12) {
+      i = i - 12;
+    }
+  }
+
   return i;
 }
 
