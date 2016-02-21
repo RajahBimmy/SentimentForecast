@@ -1,7 +1,7 @@
 var dateMap = [];
 var dateNames = [];
 
-d3.selectAll("h1").style("color", "white");
+d3.selectAll("h1").style("color", "black");
 
 d3.json("sentimentParsed.json", function(data) {
 
