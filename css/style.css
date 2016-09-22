@@ -81,7 +81,7 @@ h3 {
 .charts--container {
   background-color: #fff;
   width: 100%;
-  filter: blur(5px);
+  /*filter: blur(5px);*/
 }
 @media screen and (min-width: 700px) {
   .charts--container {
