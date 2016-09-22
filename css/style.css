@@ -14,7 +14,7 @@ body {
   color: #fff;
   /*background-image: linear-gradient(transparent 50%, rgba(255, 255, 255, 0.5) 25%);
   background-size: 4px 4px;*/
-  background-image: url('../images/waSqPa.JPG');
+  background-image: url('../images/waSqPa3.jpg');
   background-size: cover;
 }
 body ul {
@@ -43,9 +43,13 @@ h3 {
 }
 
 #info {
-  min-height: 400px;
+  min-height: 500px;
   padding-left: 10px;
   padding-bottom: 10px;
+}
+
+.tick {
+  fill: #fff;
 }
 
 .chart {
@@ -56,6 +60,7 @@ h3 {
 
 .chart--headline, .chart--subHeadline {
   text-align: center;
+  max-width: 900px;
 }
 
 .chart--headline {
@@ -80,7 +85,7 @@ h3 {
 }
 @media screen and (min-width: 700px) {
   .charts--container {
-    max-width: 700px;
+    max-width: 900px;
     left: 50%;
     top: 10%;
     margin: 5em auto;
@@ -136,7 +141,7 @@ h3 {
 .lineChart--circle {
   fill: #6bb7c7;
   stroke: #fff;
-  stroke-width: 3;
+  stroke-width: 1.5;
 }
 
 .lineChart--circle__highlighted {
@@ -222,7 +227,7 @@ h3 {
 }
 
 .pieChart__pink {
-  fill: #d11255;
+  fill: #AA3939;
 }
 
 .pieChart__gray {
@@ -230,7 +235,7 @@ h3 {
 }
 
 .pieChart__brown {
-  fill: #816c5d;
+  fill: #2D5830;
 }
 
 /**
